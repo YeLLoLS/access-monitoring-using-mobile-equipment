@@ -1,0 +1,59 @@
+{% extends "profil.html" %}
+
+{% block content %}
+
+<div class="column is-3 is-right">
+    <div class="box">
+        <form method="POST" action="{{ url_for('adauga_student') }}">
+            {% with message = get_flashed_messages() %}
+            {% if message[0] == 'Student existent!' %}
+                <div class="notification is-danger" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Student adaugat cu success!' %}
+                <div class="notification is-success" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Tipul contului selectat este invalid!' %}
+                <div class="notification is-warning" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% endif %}
+            {% endwith %}
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="nameValue"  placeholder="name">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="usernameValue"  placeholder="username">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="password" name="passwordValue"  placeholder="password">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="email" name="emailValue"  placeholder="email">
+                </div>
+            </div>
+            <div class="field">
+                <div class="select is-info is-large">
+                  <select name="selected_acc_type">
+                    <option value="">Tip cont</option>
+                    <option value="student">student</option>
+                      <option value="student">profesor</option>
+                  </select>
+                </div>
+            </div>
+            <button class="button is-block is-info is-large is-fullwidth">Adauga</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

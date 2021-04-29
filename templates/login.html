@@ -5,23 +5,28 @@
     <h3 class="title">Login</h3>
     <div class="box">
         <form method="POST" action="{{ url_for('login') }}">
-            <div class="msg">{{ msg }}</div>
+            {% with message = get_flashed_messages() %}
+            {% if message %}
+                <div class="notification is-danger">
+                    {{ message[0] }}
+                </div>
+            {% endif %}
+            {% endwith %}
+            {% if msg == 'Access interzis!' %}
+                <div class="notification is-danger">
+                    {{ msg }}
+                </div>
+            {% endif %}
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="email" name="emailValue" value="{{request.form.emailValue}}" placeholder="Your Email" autofocus="">
+                    <input class="input is-large" type="text" name="usernameValue" placeholder="username" autofocus="">
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="passwordValue" value="{{request.form.passwordValue}}" placeholder="Your Password">
+                    <input class="input is-large" type="password" name="passwordValue" placeholder="Your Password">
                 </div>
-            </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Remember me
-                </label>
             </div>
             <button class="button is-block is-info is-large is-fullwidth">Login</button>
         </form>
