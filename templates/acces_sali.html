@@ -9,7 +9,6 @@
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="http://127.0.0.1:5000/static/style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
-
     <script src="https://kit.fontawesome.com/be80ab5742.js" crossorigin="anonymous"></script>
 </head>
 
@@ -45,19 +44,7 @@
         <div class="hero-body">
             <div class="table-container">
                {% with message = get_flashed_messages() %}
-                {% if message[0] == 'Nu exista utilizatori!' %}
-                    <div class="notification is-warning" style="text-align: center;">
-                        {{ message[0] }}
-                    </div>
-                {% elif message[0] == 'Interzisa stergerea acestui cont!!!' %}
-                    <div class="notification is-warning" style="text-align: center;">
-                        {{ message[0] }}
-                    </div>
-                {% elif message[0] == 'Utilizatorul a fost modificat!' %}
-                    <div class="notification is-success" style="text-align: center;">
-                        {{ message[0] }}
-                    </div>
-                {% elif message[0] == 'Utilizatorul a fost sters!' %}
+                {% if message[0] == 'Accesul a fost sters!' %}
                     <div class="notification is-success" style="text-align: center;">
                         {{ message[0] }}
                     </div>
@@ -69,42 +56,26 @@
 					<thead>
 						<tr>
 							<th align="center">nume</th>
-							<th align="center">username</th>
-							<th align="center">password</th>
-							<th align="center">email</th>
-							<th align="center">create_time</th>
-							<th align="center">tip_user</th>
-							<th align="center">Stare cont</th>
 							<th align="center">idUser</th>
-							<th align="center">Edit/Sterge</th>
+							<th align="center">sala</th>
+							<th align="center">idSala</th>
+							<th align="center">Sterge</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for user in users %}
+						{% for acces in acceses %}
 						<tr>
-							<td data-label="nume: " align="center">{{user[1]}}</td>
-							<td data-label="username: " align="center">{{user[2]}}</td>
-							<td data-label="password: " align="center">{{user[3]}}</td>
-							<td data-label="email: " align="center">{{user[4]}}</td>
-							<td data-label="create_time: " align="center">{{user[5]}}</td>
-							<td data-label="tip_user: " align="center">{{user[6]}}</td>
-							<td data-label="Stare cont: " align="center">{{user[7]}}</td>
-							<td data-label="idUser: " align="center">{{user[0]}}</td>
+							<td data-label="nume: " align="center">{{acces[0]}}</td>
+							<td data-label="idUser: " align="center">{{acces[1]}}</td>
+							<td data-label="sala: " align="center">{{acces[2]}}</td>
+							<td data-label="idSala: " align="center">{{acces[3]}}</td>
 							<td>
 								<div class="buttons has-addons is-centered">
-									<p class="control">
-										<a class="button is-warning"  href="{{ url_for('edit_user', idUser=user[0]) }}">
-											<span class="icon is-small">
-												<i class="fas fa-user-edit"></i>
-											</span>
-											<span>Edit</span>
-										</a>
-									</p>
-									<form method="POST" action="{{ url_for('delete_user', idUser=user[0]) }}">
+									<form method="POST" action="{{ url_for('delete_acces', idUser=acces[1]) }}">
 										<p class="control">
 											<button class="button is-danger">
 												<span class="icon is-small">
-													<i class="fas fa-user-times"></i>
+													<i class="fas fa-trash-alt"></i>
 												</span>
 												<span>Sterge</span>
 											</button>

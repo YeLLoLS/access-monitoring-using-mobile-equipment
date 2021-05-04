@@ -68,7 +68,7 @@ table th {
     border-bottom: 1px solid #ddd;
     display: block;
     font-size: .8em;
-    text-align: right;
+    align: center;
   }
 
   table td::before {
@@ -87,4 +87,5 @@ table th {
 
   }
 }
+
 

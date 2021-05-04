@@ -11,7 +11,7 @@ def login_info(username, pas):
                                  database='licentaDB')
 
     cursor = connection.cursor()
-    sql = cursor.execute(("SELECT * from users where username = %s and password = %s "), (username, pas))
+    sql = cursor.execute("SELECT * from users where username = %s and password = %s ", (username, pas))
     data = cursor.fetchone()
     cursor.close()
     return data
@@ -24,7 +24,7 @@ def add_user_info(username):
                                  database='licentaDB')
 
     cursor = connection.cursor()
-    sql = cursor.execute(("SELECT * from users where username = %s"), (username))
+    sql = cursor.execute("SELECT * from users where username = %s", (username))
     data = cursor.fetchone()
     cursor.close()
     return data
@@ -101,5 +101,71 @@ def delete_usr(id):
 
     cursor = connection.cursor()
     sql = cursor.execute("DELETE FROM users WHERE idUser=%s", id)
+    connection.commit()
+    cursor.close()
+
+
+def test():
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute(
+        "select nume, username, password, email, create_time, tip_user, stare_cont, idSala from users LEFT OUTER JOIN accesSaliTEST using(idUser) UNION select nume, username, password, email, create_time, tip_user, stare_cont, idSala from users RIGHT OUTER JOIN accesSaliTEST using(idUser)")
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
+
+def get_acces():
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute(
+        "select a.nume, a.idUser, c.nume_sala, b.idSala from users a RIGHT OUTER JOIN accesSaliTEST b  ON a.idUser=b.idUser LEFT OUTER JOIN sali c ON b.idSala=c.idSala")
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
+
+def delete_access(idUser):
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute("DELETE FROM accesSaliTEST WHERE idUser=%s", idUser)
+    connection.commit()
+    cursor.close()
+
+
+def get_acces_info(idUser, idSala):
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute("SELECT * FROM accesSaliTEST where idUser=%s and idSala=%s", (idUser, idSala))
+    data = cursor.fetchone()
+    cursor.close()
+    return data
+
+
+
+def add_acces(idUser, idSala):
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute("insert into accesSaliTEST(idUser, idSala) values (%s,%s)", (idUser, idSala))
     connection.commit()
     cursor.close()
