@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, url_for, session, redirect, flash
 from funct import login_info, add_user_info, add_user, get_users, get_single_user, update_user, delete_usr, get_acces, \
     delete_access, get_acces_info, add_acces, get_acces_for_button
+from rpi_stuff import *
+import requests
 
 app = Flask(__name__)
 
@@ -166,11 +168,18 @@ def profil():
             b207 = [info[0][0]]
             return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=b207)
         elif len(info) == 2:
-            """b206 = info[0][0]
-            b207 = info[1][0]"""
             idSali = [info[0][0], info[1][0]]
             return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=idSali)
+    return redirect(url_for('logout'))
 
+
+@app.route('/deschide_usa', methods=["GET", "POST"])
+def deschide_usa():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        if request.method == 'GET':
+            return redirect(url_for('profil')), req(session['name'])
+        else:
+            return "Error!!!"
     return redirect(url_for('logout'))
 
 

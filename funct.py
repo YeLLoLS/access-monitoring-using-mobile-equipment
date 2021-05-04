@@ -1,9 +1,5 @@
 import pymysql
 
-"""username = "lungusilviu18"
-pas = "123qweasd"""
-
-
 def login_info(username, pas):
     connection = pymysql.connect(host='139.162.181.85',
                                  user='yello',
@@ -69,16 +65,6 @@ def get_single_user(id):
     cursor.close()
     return data
 
-
-"""nume = "asd"
-username = "asd"
-password = "asd"
-email = "email"
-tip_user = "student"
-acc_status = "activ"
-idUser = "5"""""
-
-
 def update_user(nume, username, password, email, tip_user, acc_status, idUser):
     connection = pymysql.connect(host='139.162.181.85',
                                  user='yello',
@@ -103,20 +89,6 @@ def delete_usr(id):
     sql = cursor.execute("DELETE FROM users WHERE idUser=%s", id)
     connection.commit()
     cursor.close()
-
-
-def test():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
-
-    cursor = connection.cursor()
-    sql = cursor.execute(
-        "select nume, username, password, email, create_time, tip_user, stare_cont, idSala from users LEFT OUTER JOIN accesSaliTEST using(idUser) UNION select nume, username, password, email, create_time, tip_user, stare_cont, idSala from users RIGHT OUTER JOIN accesSaliTEST using(idUser)")
-    data = cursor.fetchall()
-    cursor.close()
-    return data
 
 
 def get_acces():
@@ -182,9 +154,5 @@ def get_acces_for_button(idUser):
     cursor.close()
     return data
 
-"""a = get_acces_for_button(8)
-print(len(a))
-print(a[0][0])
-print(a[1][0])"""
 
 
