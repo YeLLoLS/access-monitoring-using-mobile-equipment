@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, url_for, session, redirect, flash
 from funct import login_info, add_user_info, add_user, get_users, get_single_user, update_user, delete_usr, get_acces, \
-    delete_access, get_acces_info, add_acces
+    delete_access, get_acces_info, add_acces, get_acces_for_button
 
 app = Flask(__name__)
 
@@ -24,12 +24,10 @@ def login():
         else:
             acc_status = user[7]
             if acc_status == 'activ':
-                name = user[1]
-                username = user[2]
-                tip_user = user[6]
-                session['username'] = username
-                session['name'] = name
-                session['tip_user'] = tip_user
+                session['idUser'] = user[0]
+                session['username'] = user[2]
+                session['name'] = user[1]
+                session['tip_user'] = user[6]
 
                 return redirect(url_for('profil', tip_user=session['tip_user']))
             elif acc_status == 'inactiv':
@@ -45,10 +43,7 @@ def adauga_acces():
         if request.method == 'POST':
             form_idUser = request.form['idUser']
             form_idSala = request.form.get('idSala')
-            print(form_idUser)
-            print(form_idSala)
             verificare_acces = get_acces_info(form_idUser, form_idSala)
-            print(verificare_acces)
             if verificare_acces is None:
                 sala_selecata = {'6', '7'}
                 if form_idSala not in sala_selecata:
@@ -150,7 +145,6 @@ def acces_sali():
 
 @app.route('/delete_acces/<int:idUser>', methods=["POST"])
 def delete_acces(idUser):
-    print(idUser)
     if 'username' in session and session['tip_user'] == 'profesor':
         if request.method == 'POST':
             delete_access(idUser)
@@ -162,7 +156,21 @@ def delete_acces(idUser):
 @app.route('/profil')
 def profil():
     if 'username' in session:
-        return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+        info = get_acces_for_button(session['idUser'])
+        if len(info) == 0:
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+        elif len(info) == 1 and info[0][0] == 6:
+            b206 = [info[0][0]]
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=b206)
+        elif len(info) == 1 and info[0][0] == 7:
+            b207 = [info[0][0]]
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=b207)
+        elif len(info) == 2:
+            """b206 = info[0][0]
+            b207 = info[1][0]"""
+            idSali = [info[0][0], info[1][0]]
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=idSali)
+
     return redirect(url_for('logout'))
 
 

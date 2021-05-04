@@ -64,7 +64,7 @@ def get_single_user(id):
                                  database='licentaDB')
 
     cursor = connection.cursor()
-    sql = cursor.execute("SELECT * from users where idUser=%s", (id))
+    sql = cursor.execute("SELECT * from users where idUser=%s", id)
     data = cursor.fetchone()
     cursor.close()
     return data
@@ -87,7 +87,7 @@ def update_user(nume, username, password, email, tip_user, acc_status, idUser):
 
     cursor = connection.cursor()
     sql = cursor.execute(
-        "UPDATE users SET nume=%s, username=%s, password=%s, email=%s, tip_user=%s, activ=%s WHERE idUser=%s",
+        "UPDATE users SET nume=%s, username=%s, password=%s, email=%s, tip_user=%s, stare_cont=%s WHERE idUser=%s",
         (nume, username, password, email, tip_user, acc_status, idUser))
     connection.commit()
     cursor.close()
@@ -169,3 +169,22 @@ def add_acces(idUser, idSala):
     sql = cursor.execute("insert into accesSaliTEST(idUser, idSala) values (%s,%s)", (idUser, idSala))
     connection.commit()
     cursor.close()
+
+def get_acces_for_button(idUser):
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute("SELECT idSala FROM accesSaliTEST where idUser=%s", idUser)
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
+"""a = get_acces_for_button(8)
+print(len(a))
+print(a[0][0])
+print(a[1][0])"""
+
+
