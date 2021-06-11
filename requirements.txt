@@ -14,3 +14,5 @@ PyMySQL==1.0.2
 requests==2.25.1
 urllib3==1.26.4
 Werkzeug==1.0.1
+
+passlib~=1.7.4

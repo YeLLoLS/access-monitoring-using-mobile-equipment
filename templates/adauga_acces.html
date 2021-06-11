@@ -51,11 +51,12 @@
 
             <div class="field">
                 <div class="select is-info is-large is-fullwidth">
-                  <select name="idSala">
-                    <option value="">Alege sala</option>
-                    <option value="6">B206</option>
-                      <option value="7">B207</option>
-                  </select>
+                    <select name="idSala">
+                        <option value="">Alege sala</option>
+                            {% for info in info_sali %}
+                        <option value="{{info[0]}}">{{info[1]}}</option>
+                            {% endfor %}
+                    </select>
                 </div>
             </div>
             <button class="button is-block is-info is-large is-fullwidth">Adauga</button>

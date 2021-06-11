@@ -47,6 +47,7 @@ def login():
 @app.route('/adauga_acces', methods=["GET", "POST"])
 def adauga_acces():
     if 'username' in session and session['tip_user'] == 'profesor':
+        info_salii = get_sali()
         if request.method == 'POST':
             form_numeUser = request.form['numeUser']
             idUser = get_idUser(form_numeUser)
@@ -54,21 +55,23 @@ def adauga_acces():
             form_ziAcces = request.form.get('ziAcces')
             form_intervalOrar = request.form.get('intervalOrar')
             interval_split = form_intervalOrar.split('-')
-            verificare_acces = get_acces_info(int(idUser), form_idSala,form_ziAcces, interval_split[0], interval_split[1])
+            verificare_acces = get_acces_info(int(idUser), form_idSala, form_ziAcces, interval_split[0],
+                                              interval_split[1])
             if verificare_acces is None:
-                sala_selecata = {'6', '7'}
-                if form_idSala not in sala_selecata:
+                sala_selectata = []
+                for el in info_salii:
+                    sala_selectata.append(str(el[0]))
+                if form_idSala not in sala_selectata:
                     flash('Sala selecata este invalida!')
                     return redirect(url_for('adauga_acces'))
                 else:
-
                     add_acces(int(idUser), form_idSala, form_ziAcces, interval_split[0], interval_split[1])
                     flash('Acces adaugat cu succes!')
                     return redirect(url_for('adauga_acces'))
             else:
                 flash('Acces existent!')
                 return redirect(url_for('adauga_acces'))
-        return render_template('adauga_acces.html', tip_user=session['tip_user'], name=session['name'])
+        return render_template('adauga_acces.html', tip_user=session['tip_user'], name=session['name'], info_sali=info_salii)
     return redirect(url_for('logout'))
 
 
@@ -215,6 +218,33 @@ def delete_acces(idUser):
 @app.route('/profil')
 def profil():
     if 'username' in session:
+        timp_start = "00:00"
+        timp_end = "12:00"
+        timp_start1 = "12:00"
+        timp_end1 = "00:00"
+        checkOra1 = time_in_range(timp_start, timp_end)
+        checkOra2 = time_in_range(timp_start1, timp_end1)
+
+        if checkOra1 is True:
+            info = list(test(2, get_date(), timp_start1, timp_end1))
+            list_id = []
+            for el in info:
+                list_id.append(el['idSala'])
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                   idSala=list_id)
+        elif checkOra2 is True:
+            info = list(test(2, get_date(), timp_start1, timp_end1))
+            list_id = []
+            for el in info:
+                list_id.append(el['idSala'])
+            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                   idSala=list_id)
+    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+
+
+"""@app.route('/profil')
+def profil():
+    if 'username' in session:
         info = get_acces_for_button(session['idUser'])
         info2 = get_acces_for_button1(session['idUser'])
         if len(info2) == 0:
@@ -291,7 +321,7 @@ def profil():
                         return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
                                                idSala=idSala)
 
-    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])"""
 
 
 @app.route('/deschide_usa', methods=["GET", "POST"])

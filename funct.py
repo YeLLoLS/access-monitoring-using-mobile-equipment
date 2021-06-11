@@ -227,13 +227,13 @@ def get_acces_for_button(idUser):
     connection = pymysql.connect(host='139.162.181.85',
                                  user='yello',
                                  password='A!3a09b86cc',
-                                 database='licentaDB')
+                                 database='licentaDB',
+                                 )
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT idSala, zile, timpStart, timpEnd FROM accesSali where idUser=%s", idUser)
     data = cursor.fetchall()
     cursor.close()
-
     return data
 
 
@@ -316,6 +316,18 @@ def get_responsabili():
     cursor.close()
     return data
 
+def get_sali():
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB')
+
+    cursor = connection.cursor()
+    sql = cursor.execute("select idSala, nume_sala from sali")
+    data = cursor.fetchall()
+    cursor.close()
+    return data
+
 
 def adauga_sala(nume_sala, cladire, responsabil, numar_locuri, tip_sala):
     connection = pymysql.connect(host='139.162.181.85',
@@ -347,6 +359,7 @@ def get_date():
     return data_ro
 
 
+
 def get_time():
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -368,20 +381,34 @@ def time_in_range(start, end):
     else:
         return start <= x or x <= end
 
+def test(idUser, zile, timpStart, timpEnd):
+    connection = pymysql.connect(host='139.162.181.85',
+                                 user='yello',
+                                 password='A!3a09b86cc',
+                                 database='licentaDB',
+                                 cursorclass=pymysql.cursors.DictCursor)
 
-"""now = datetime.now()
-start_time = str(time_conversion('23:30'))
-print(start_time)
+    cursor = connection.cursor()
+    sql = cursor.execute("SELECT idSala FROM accesSali where idUser=%s and zile=%s and timpStart=%s and timpEnd=%s", (idUser, zile, timpStart, timpEnd))
+    data = cursor.fetchall()
+    cursor.close()
+    return data
 
-end_time = str(time_conversion('01:35'))
-print(end_time)
-current_time = str(now.strftime("%H:%M"))
-print(now.strftime("%H:%M"))
-a = time_in_range(start_time, end_time, current_time)
-print(a)"""
+timp_start = "00:00"
+timp_end = "12:00"
+timp_start1 = "12:00"
+timp_end1 = "00:00"
+checkOra1 = time_in_range(timp_start, timp_end)
+checkOra2 = time_in_range(timp_start1, timp_end1)
 
-"""curr = datetime.now()
-seq1 = []
-for x in range(10):
-    curr = curr + timedelta(minutes = 15)
-    seq1.append(curr.strftime("%H:%M"))"""
+if checkOra1 is True:
+    info = test(2, get_date(), timp_start, timp_end)
+    for el in info:
+        print(el['idSala'])
+elif checkOra2 is True:
+    info = list(test(2, get_date(), timp_start1, timp_end1))
+    list_id = []
+    for el in info:
+        list_id.append(el['idSala'])
+    print(list_id)
+
