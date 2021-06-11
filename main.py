@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, url_for, session, redirect, flash
-from funct import login_info, add_user_info, add_user, get_users, get_single_user, update_user, delete_usr, get_acces, \
-    delete_access, get_acces_info, add_acces, get_acces_for_button
+from funct import *
 from rpi_stuff import *
 import requests
+from datetime import date, time, datetime
+from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
@@ -19,22 +20,26 @@ def login():
     if request.method == 'POST':
         form_username = request.form['usernameValue']
         form_password = request.form['passwordValue']
-        user = login_info(form_username, form_password)
+        user = login_info(form_username)
         if user is None:
             flash('Datele introduse sunt incorecte!')
             return redirect(url_for('login'))
         else:
-            acc_status = user[7]
-            if acc_status == 'activ':
-                session['idUser'] = user[0]
-                session['username'] = user[2]
-                session['name'] = user[1]
-                session['tip_user'] = user[6]
+            db_pass = user[3]
+            if sha256_crypt.verify(form_password, db_pass):
+                acc_status = user[7]
+                if acc_status == 'activ':
+                    session['idUser'] = user[0]
+                    session['username'] = user[2]
+                    session['name'] = user[1]
+                    session['tip_user'] = user[6]
 
-                return redirect(url_for('profil', tip_user=session['tip_user']))
-            elif acc_status == 'inactiv':
-                flash('Cont dezactivat!')
-                return redirect(url_for('logout'))
+                    return redirect(url_for('profil', tip_user=session['tip_user']))
+                elif acc_status == 'inactiv':
+                    flash('Cont dezactivat!')
+                    return redirect(url_for('logout'))
+            flash('Datele introduse sunt incorecte!')
+            return redirect(url_for('login'))
 
     return render_template('login.html')
 
@@ -43,16 +48,21 @@ def login():
 def adauga_acces():
     if 'username' in session and session['tip_user'] == 'profesor':
         if request.method == 'POST':
-            form_idUser = request.form['idUser']
+            form_numeUser = request.form['numeUser']
+            idUser = get_idUser(form_numeUser)
             form_idSala = request.form.get('idSala')
-            verificare_acces = get_acces_info(form_idUser, form_idSala)
+            form_ziAcces = request.form.get('ziAcces')
+            form_intervalOrar = request.form.get('intervalOrar')
+            interval_split = form_intervalOrar.split('-')
+            verificare_acces = get_acces_info(int(idUser), form_idSala,form_ziAcces, interval_split[0], interval_split[1])
             if verificare_acces is None:
                 sala_selecata = {'6', '7'}
                 if form_idSala not in sala_selecata:
                     flash('Sala selecata este invalida!')
                     return redirect(url_for('adauga_acces'))
                 else:
-                    add_acces(form_idUser, form_idSala)
+
+                    add_acces(int(idUser), form_idSala, form_ziAcces, interval_split[0], interval_split[1])
                     flash('Acces adaugat cu succes!')
                     return redirect(url_for('adauga_acces'))
             else:
@@ -70,7 +80,7 @@ def adauga_student():
             user = add_user_info(form_username)
             if user is None:
                 form_name = request.form['nameValue']
-                form_password = request.form['passwordValue']
+                form_password = sha256_crypt.hash(request.form['passwordValue'])
                 form_email = request.form['emailValue']
                 form_tip_user = request.form.get('selected_acc_type')
                 tip_cont_acceptat = {'student', 'profesor'}
@@ -95,15 +105,25 @@ def edit_user(idUser):
         user = get_single_user(idUser)
         if request.method == 'POST':
             form_name = request.form['nameValue']
-            form_username = request.form['usernameValue']
-            form_password = request.form['passwordValue']
             form_email = request.form['emailValue']
-            form_tipUser = request.form['userTypeValue']
-            form_accStatus = request.form['accStatusValue']
-            update_user(form_name, form_username, form_password, form_email, form_tipUser, form_accStatus, idUser)
+            form_tipUser = request.form.get('userTypeValue')
+            update_user(form_name, form_email, form_tipUser, idUser)
             flash('Utilizatorul a fost modificat!')
             return redirect(url_for('utilizatori'))
         return render_template('edit_user.html', tip_user=session['tip_user'], name=session['name'], user=user)
+    return redirect(url_for('logout'))
+
+
+@app.route('/schimba_parola', methods=["GET", "POST"])
+def schimba_parola():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        if request.method == 'POST':
+            form_username = request.form['username']
+            form_password = sha256_crypt.hash(request.form['password'])
+            change_password(form_username, form_password)
+            flash('Parola schimbata cu succes!')
+            return redirect(url_for('schimba_parola'))
+        return render_template('schimba_parola.html', tip_user=session['tip_user'], name=session['name'])
     return redirect(url_for('logout'))
 
 
@@ -114,21 +134,58 @@ def delete_user(idUser):
             flash('Interzisa stergerea acestui cont!!!')
             return redirect(url_for('utilizatori'))
         elif request.method == 'POST':
+
+            delete_access(idUser)
+            delete_responsabil(idUser)
             delete_usr(idUser)
             flash('Utilizatorul a fost sters!')
             return redirect(url_for('utilizatori'))
     return redirect(url_for('logout'))
 
 
-@app.route('/utilizatori', methods=["GET", "POST"])
-def utilizatori():
+@app.route('/disable_user/<int:idUser>', methods=["POST"])
+def disable_user(idUser):
     if 'username' in session and session['tip_user'] == 'profesor':
-        users = get_users()
+        if request.method == 'POST':
+            disable_acc(idUser)
+            flash('Utilizator dezactivat cu succes!')
+            return redirect(url_for('utilizatori_activi'))
+    return redirect(url_for('logout'))
+
+
+@app.route('/activate_user/<int:idUser>', methods=["POST"])
+def activate_user(idUser):
+    if 'username' in session and session['tip_user'] == 'profesor':
+        if request.method == 'POST':
+            activate_acc(idUser)
+            flash('Utilizator dezactivat cu succes!')
+            return redirect(url_for('utilizatori_inactivi'))
+    return redirect(url_for('logout'))
+
+
+@app.route('/utilizatori_activi', methods=["GET", "POST"])
+def utilizatori_activi():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        users = get_active_users()
         if users is None:
             flash('Nu exista utilizatori!')
-            return redirect(url_for('utilizatori'))
+            return redirect(url_for('utilizatori_activi'))
         else:
-            return render_template('utilizatori.html', tip_user=session['tip_user'], name=session['name'], users=users)
+            return render_template('utilizatori_activi.html', tip_user=session['tip_user'], name=session['name'],
+                                   users=users)
+    return redirect(url_for('logout'))
+
+
+@app.route('/utilizatori_inactivi', methods=["GET", "POST"])
+def utilizatori_inactivi():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        users = get_inactive_users()
+        if users is None:
+            flash('Nu exista utilizatori!')
+            return redirect(url_for('utilizatori_inactivi'))
+        else:
+            return render_template('utilizatori_inactivi.html', tip_user=session['tip_user'], name=session['name'],
+                                   users=users)
     return redirect(url_for('logout'))
 
 
@@ -159,18 +216,82 @@ def delete_acces(idUser):
 def profil():
     if 'username' in session:
         info = get_acces_for_button(session['idUser'])
-        if len(info) == 0:
+        info2 = get_acces_for_button1(session['idUser'])
+        if len(info2) == 0:
             return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-        elif len(info) == 1 and info[0][0] == 6:
-            b206 = [info[0][0]]
-            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=b206)
-        elif len(info) == 1 and info[0][0] == 7:
-            b207 = [info[0][0]]
-            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=b207)
-        elif len(info) == 2:
-            idSali = [info[0][0], info[1][0]]
-            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'], idSala=idSali)
-    return redirect(url_for('logout'))
+        elif len(info2) == 1 and info[0][0] == 6:
+            zi_acces = info[0][1]
+            zi_curenta = get_date()
+            if zi_acces == zi_curenta:
+                ora_start = info[0][2]
+                ora_end = info[0][3]
+                checkOra = time_in_range(ora_start, ora_end)
+                if checkOra is True:
+                    b206 = [info[0][0]]
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                           idSala=b206)
+                else:
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+            else:
+                return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+        elif len(info2) == 1 and info[0][0] == 7:
+            zi_acces = info[0][1]
+            zi_curenta = get_date()
+            if zi_acces == zi_curenta:
+                ora_start = info[0][2]
+                ora_end = info[0][3]
+                checkOra = time_in_range(ora_start, ora_end)
+                if checkOra is True:
+                    b207 = [info[0][0]]
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                           idSala=b207)
+                else:
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+            else:
+                return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
+        elif len(info2) == 2:
+            zi_acces1 = info[0][1]
+            zi_acces2 = info[1][1]
+            zi_curenta = get_date()
+            if zi_acces1 == zi_acces2 == zi_curenta:
+                ora_start1 = info[0][2]
+                ora_end1 = info[0][3]
+                ora_start2 = info[1][2]
+                ora_end2 = info[1][3]
+
+                checkOra = time_in_range(ora_start1, ora_end1)
+                checkOra2 = time_in_range(ora_start2, ora_end2)
+                if checkOra == checkOra2:
+                    idSala = [info[0][0], info[1][0]]
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                           idSala=idSala)
+                elif checkOra is True:
+                    idSala = [info[0][0]]
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                           idSala=idSala)
+                elif checkOra2 is True:
+                    idSala = [info[1][0]]
+                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                           idSala=idSala)
+            else:
+                if zi_acces1 == zi_curenta:
+                    ora_start = info[0][2]
+                    ora_end = info[0][3]
+                    checkOra = time_in_range(ora_start, ora_end)
+                    if checkOra is True:
+                        idSala = [info[0][0]]
+                        return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                               idSala=idSala)
+                elif zi_acces2 == zi_curenta:
+                    ora_start = info[1][2]
+                    ora_end = info[1][3]
+                    checkOra = time_in_range(ora_start, ora_end)
+                    if checkOra is True:
+                        idSala = [info[1][0]]
+                        return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
+                                               idSala=idSala)
+
+    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
 
 
 @app.route('/deschide_usa', methods=["GET", "POST"])
@@ -181,6 +302,88 @@ def deschide_usa():
         else:
             return "Error!!!"
     return redirect(url_for('logout'))
+
+
+@app.route('/adauga_sali', methods=["GET", "POST"])
+def adauga_sali():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        info_responsabili = get_responsabili()
+        if request.method == 'POST':
+            form_numeSala = request.form['numeSala']
+            form_numarLocuri = request.form.get('numarLocuri')
+            form_responsabil = int(request.form.get('idResponsabil'))
+            lista_responsabili = []
+            a = get_responsabili()
+            for el in a:
+                lista_responsabili.append(int(el[0]))
+            if form_responsabil not in lista_responsabili:
+                flash('Resposanbil selectat gresit!')
+                return redirect(url_for('adauga_sali'))
+            else:
+                form_cladire = request.form.get('cladire')
+                val_cladire_acceptate = {'UPT_ELECTRO: A', 'UPT_ELECTRO: B', 'UPT_ELECTRO: C', 'UPT_ELECTRO: D'}
+                if form_cladire not in val_cladire_acceptate:
+                    flash('Cladire invalida!')
+                    return redirect(url_for('adauga_sali'))
+                else:
+                    form_tip_sala = request.form.get('tip_sala')
+                    val_tipSala_acceptate = {'laborator', 'seminar', 'curs'}
+                    if form_tip_sala not in val_tipSala_acceptate:
+                        flash('Tip sala invalid!')
+                        return redirect(url_for('adauga_sali'))
+                    else:
+                        add = adauga_sala(form_numeSala, form_cladire, form_responsabil, form_numarLocuri,
+                                          form_tip_sala)
+                        if add == 'OK':
+                            flash('Sala adaugata cu succes!')
+                            return redirect(url_for('adauga_sali'))
+                        elif add == 'Exista deja aceasta sala!':
+                            flash('Exista deja aceasta sala!')
+                            return redirect(url_for('adauga_sali'))
+
+        return render_template('adauga_sali.html', tip_user=session['tip_user'], name=session['name'],
+                               info_responsabili=info_responsabili)
+    return redirect(url_for('logout'))
+
+
+@app.route('/adauga_unitate', methods=["GET", "POST"])
+def adauga_unitate():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        info_sali = get_sali_notInUnitatiSali()
+        if request.method == 'POST':
+            form_numeUnitate = request.form['numeUnitate']
+            form_idSala = request.form.get('idSala')
+            add = adauga_unitate_unitateSala(form_numeUnitate, int(form_idSala))
+            if add == 'OK':
+                flash('Adaugat cu succes!')
+                return redirect(url_for('adauga_unitate'))
+            elif add == 'Exista deja o unitate cu acest nume!':
+                flash('Exista deja o unitate cu acest nume!')
+                return redirect(url_for('adauga_unitate'))
+        return render_template('adauga_unitate.html', tip_user=session['tip_user'], name=session['name'],
+                               info_sali=info_sali)
+    return redirect(url_for('logout'))
+
+
+@app.route('/administrare_utilizatori', methods=["GET", "POST"])
+def administrare_utilizatori():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        return render_template('administrare_utilizatori.html', tip_user=session['tip_user'], name=session['name'])
+    return redirect(url_for('login'))
+
+
+@app.route('/administrare_accese', methods=["GET", "POST"])
+def administrare_accese():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        return render_template('administrare_accese.html', tip_user=session['tip_user'], name=session['name'])
+    return redirect(url_for('login'))
+
+
+@app.route('/administrare_unitati_fizice', methods=["GET", "POST"])
+def administrare_unitati_fizice():
+    if 'username' in session and session['tip_user'] == 'profesor':
+        return render_template('administrare_unitati_fizice.html', tip_user=session['tip_user'], name=session['name'])
+    return redirect(url_for('login'))
 
 
 @app.route('/logout')
