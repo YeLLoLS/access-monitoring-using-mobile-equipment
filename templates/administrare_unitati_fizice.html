@@ -9,14 +9,11 @@
     <link rel="stylesheet" href="http://127.0.0.1:5000/static/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css" />
 
-
 </head>
 
 <body>
 {% block body %}
     <section class="hero is-primary is-fullheight is-mobile">
-
-        {% if tip_user == 'profesor' %}
         <div class="hero-head">
             <nav class="navbar">
                 <div class="container">
@@ -43,83 +40,42 @@
                 </div>
             </nav>
         </div>
+        {% if tip_user == 'profesor' %}
         <div class="hero-body is-align-items-stretch">
             <div class="columns is-flex-grow-1">
                 <div class="column is-3">
                     <div class="box">
                         <form method="POST">
                             <h3 class="title" style="color: black;text-align: center;">Dashboard</h3>
-                            <a href="{{ url_for('administrare_utilizatori') }}" class="button is-block is-info is-large is-fullwidth" >Administrare utilizatori</a>
+                            <a href="{{ url_for('adauga_unitate') }}" class="button is-block is-info is-large is-fullwidth" >Adauga unitate</a>
                             </br>
-                            <a href="{{ url_for('administrare_accese') }}" class="button is-block is-info is-large is-fullwidth" >Administrare accese</a>
+                            <a href="{{ url_for('adauga_sali') }}" class="button is-block is-info is-large is-fullwidth" >Adauga sala</a>
                             </br>
-                            <a href="{{ url_for('administrare_unitati_fizice') }}" class="button is-block is-info is-large is-fullwidth" >Administrare unitati fizice</a>
-                            {% for id in idSala %}
-                                {% if id == 6 %}
-                                </br>
-                                <a href="" class="button is-block is-warning is-large is-fullwidth">Deschide B206</a>
-                                {% elif id == 7 %}
-                                </br>
-                                <a href="{{ url_for('deschide_usa') }}" class="button is-block is-warning is-large is-fullwidth">Deschide B207</a>
-                                {% endif %}
-                            {% endfor %}
                         </form>
                     </div>
                 </div>
                 {% block content %}
-
                 {% endblock %}
             </div>
         </div>
-
-
         {% endif %}
 
         {% if tip_user == 'student' %}
-        <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
-                    <div class="navbar-brand">
-                      <a class="navbar-item" style="font-weight: bold;">
-                          {{name}}
-                      </a>
-                      <span class="navbar-burger" data-target="navbarMenuHeroA" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </span>
-                    </div>
-                    <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
-                            <a href="{{ url_for('profil') }}" class="navbar-item" style="font-weight: bold;">
-                                Profile
-                            </a>
-                            <a href="{{ url_for('logout') }}" class="navbar-item" style="font-weight: bold;">
-                                Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-
         <div class="hero-body">
             <div class="container has-text-centered">
-
                 </br></br></br>
                 <h1 class="bottom">
                      Buna ziua, domnule {{ tip_user }} {{ name }}!!</br></br> Bine ai venit !
                 </h1></br></br></br>
-
             </div>
         </div>
         {% endif %}
-
 
     </section>
 {% endblock %}
 </body>
 
 </html>
+
 
 

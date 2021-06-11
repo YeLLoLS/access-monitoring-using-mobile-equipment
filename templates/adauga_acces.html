@@ -1,4 +1,4 @@
-{% extends "profil.html" %}
+{% extends "administrare_accese.html" %}
 
 {% block content %}
 
@@ -22,12 +22,35 @@
             {% endwith %}
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="text" name="idUser"  placeholder="idUser">
+                    <input class="input is-large" type="text" name="numeUser"  placeholder="nume user">
+                </div>
+            </div>
+            <div class="field">
+                <div class="select is-info is-large is-fullwidth">
+                      <select name="ziAcces">
+                          <option value="">Alege ziua</option>
+                          <option value="luni">luni</option>
+                          <option value="marți">marți</option>
+                          <option value="miercuri">miercuri</option>
+                          <option value="joi">joi</option>
+                          <option value="vineri">vineri</option>
+                          <option value="sâmbătă">sâmbătă</option>
+                          <option value="duminică">duminică</option>
+                      </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="select is-info is-large is-fullwidth">
+                      <select name="intervalOrar">
+                          <option value="">Alege interval orar</option>
+                          <option value="00:00-12:00">00:00-12:00</option>
+                          <option value="12:00-00:00">12:00-00:00</option>
+                      </select>
                 </div>
             </div>
 
             <div class="field">
-                <div class="select is-info is-large">
+                <div class="select is-info is-large is-fullwidth">
                   <select name="idSala">
                     <option value="">Alege sala</option>
                     <option value="6">B206</option>

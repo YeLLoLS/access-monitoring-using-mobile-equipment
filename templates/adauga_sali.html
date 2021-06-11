@@ -1,0 +1,83 @@
+{% extends "administrare_unitati_fizice.html" %}
+
+{% block content %}
+
+<div class="column is-3 is-right">
+    <div class="box">
+        <form method="POST" action="{{ url_for('adauga_sali') }}">
+            {% with message = get_flashed_messages() %}
+            {% if message[0] == 'Cladire invalida!' %}
+                <div class="notification is-danger" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Sala adaugata cu succes!' %}
+                <div class="notification is-success" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Tip sala invalid!' %}
+                <div class="notification is-danger" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Exista deja aceasta sala!' %}
+                <div class="notification is-danger" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% elif message[0] == 'Resposanbil selectat gresit!' %}
+                <div class="notification is-danger" style="text-align: center;">
+                    {{ message[0] }}
+                </div>
+            {% endif %}
+            {% endwith %}
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="numeSala"  placeholder="Ex: A201">
+                </div>
+            </div>
+            <div class="field">
+                  <div class="select is-info is-large is-fullwidth">
+                      <select name="numarLocuri">
+                          <option value="">Numar locuri</option>
+                          <option value="25">25</option>
+                          <option value="30">30</option>
+                          <option value="100">100</option>
+                      </select>
+                  </div>
+            </div>
+            <div class="field">
+                <div class="select is-info is-large is-fullwidth">
+                    <select name="idResponsabil">
+                        <option value="">Alege responsabil</option>
+                            {% for info in info_responsabili %}
+                        <option value="{{info[0]}}">{{info[1]}}</option>
+                            {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="select is-info is-large is-fullwidth">
+                    <select name="cladire">
+                        <option value="">Alege cladire</option>
+                        <option value="UPT_ELECTRO: A">UPT_ELECTRO: A</option>
+                        <option value="UPT_ELECTRO: B">UPT_ELECTRO: B</option>
+                        <option value="UPT_ELECTRO: C">UPT_ELECTRO: C</option>
+                        <option value="UPT_ELECTRO: D">UPT_ELECTRO: D</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                  <div class="select is-info is-large is-fullwidth">
+                      <select name="tip_sala">
+                          <option value="">Tipul salii</option>
+                          <option value="laborator">laborator</option>
+                          <option value="seminar">seminar</option>
+                          <option value="curs">curs</option>
+                      </select>
+                  </div>
+              </div>
+            <button class="button is-block is-info is-large is-fullwidth">Adauga</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

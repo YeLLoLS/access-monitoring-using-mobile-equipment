@@ -12,10 +12,9 @@ query = """mutation {
   }
 """
 
-url = 'http://192.168.0.153:5000/graphql'
+url = 'https://192.168.0.153/graphql'
 
 
 def req(numeUser):
     query2 = query % (str(numeUser))
-    print(query2)
     requests.post(url, json={'query': query2})

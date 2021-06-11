@@ -45,38 +45,30 @@
         <div class="hero-body">
             <div class="container has-text-centered">
                <div class="column is-4 is-offset-4">
-                    <h3 class="title">Se modifica utilizatorul cu id:{{user[0]}}</h3>
                     <div class="box">
                         <form method="POST">
                             <div class="field">
                                 <div class="control">
-                                    <input class="input is-large" type="text" name="nameValue" value="{{user[1]}}">
+                                    <input class="input is-large" type="text" name="nameValue" value="{{user[0]}}">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input is-large" type="text" name="emailValue" value="{{user[1]}}">
                                 </div>
                             </div>
                             <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" name="usernameValue" value="{{user[2]}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" name="passwordValue" value="{{user[3]}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" name="emailValue" value="{{user[4]}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" name="userTypeValue" value="{{user[6]}}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" name="accStatusValue" value="{{user[7]}}">
-                                </div>
+                                  <div class="select is-info is-large is-fullwidth">
+                                      <select name="userTypeValue">
+                                          <option value="{{user[2]}}">{{user[2]}}</option>
+                                          {% if user[2] == 'student' %}
+                                          <option value="profesor">profesor</option>
+                                          {% elif user[2] == 'profesor' %}
+                                          <option value="student">student</option>
+                                          {% endif %}
+                                      </select>
+                                  </div>
                             </div>
                             <p class="control">
                                 <button class="button is-warning is-large is-fullwidth">
