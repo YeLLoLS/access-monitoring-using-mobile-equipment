@@ -49,11 +49,13 @@
                     <div class="box">
                         <form method="POST">
                             <h3 class="title" style="color: black;text-align: center;">Dashboard</h3>
-                            <a href="{{ url_for('administrare_utilizatori') }}" class="button is-block is-info is-large is-fullwidth" >Administrare utilizatori</a>
+                            <a href="{{ url_for('adauga_student') }}" class="button is-block is-info is-large is-fullwidth" >Adauga utilizator</a>
                             </br>
-                            <a href="{{ url_for('administrare_accese') }}" class="button is-block is-info is-large is-fullwidth" >Administrare accese</a>
+                            <a href="{{ url_for('utilizatori') }}" class="button is-block is-info is-large is-fullwidth">Utilizatori</a>
                             </br>
-                            <a href="{{ url_for('administrare_unitati_fizice') }}" class="button is-block is-info is-large is-fullwidth" >Administrare unitati fizice</a>
+                            <a href="{{ url_for('adauga_acces') }}" class="button is-block is-info is-large is-fullwidth">Adauga acces</a>
+                            </br>
+                            <a href="{{ url_for('acces_sali') }}" class="button is-block is-info is-large is-fullwidth">Acces sali</a>
                             {% for id in idSala %}
                                 {% if id == 6 %}
                                 </br>
