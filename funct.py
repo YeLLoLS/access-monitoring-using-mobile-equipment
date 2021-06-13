@@ -152,20 +152,21 @@ def get_acces():
 
     cursor = connection.cursor()
     sql = cursor.execute(
-        "select a.nume, a.idUser, c.nume_sala, b.idSala from users a RIGHT OUTER JOIN accesSali b  ON a.idUser=b.idUser LEFT OUTER JOIN sali c ON b.idSala=c.idSala")
+        "select a.nume, a.idUser, c.nume_sala, b.idAcces, b.timpStart, b.timpEnd, b.idSala, b.zile from users a RIGHT OUTER JOIN accesSali b  ON a.idUser=b.idUser LEFT OUTER JOIN sali c ON b.idSala=c.idSala")
     data = cursor.fetchall()
     cursor.close()
     return data
 
 
-def delete_access(idUser):
+
+def delete_access(idAcces):
     connection = pymysql.connect(host='139.162.181.85',
                                  user='yello',
                                  password='A!3a09b86cc',
                                  database='licentaDB')
 
     cursor = connection.cursor()
-    sql = cursor.execute("DELETE FROM accesSali WHERE idUser=%s", idUser)
+    sql = cursor.execute("DELETE FROM accesSali WHERE idAcces=%s", idAcces)
     connection.commit()
     cursor.close()
 
@@ -280,15 +281,7 @@ def adauga_unitate_unitateSala(numeUnitate, idSala):
     return verificare_status
 
 
-"""def test():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
-    cursor = connection.cursor()
-    sql_ins = cursor.execute("select idUser from users where idUser=10")
-    data2 = cursor.fetchone()
-    print(data2[0])"""
+
 
 
 def get_sali_notInUnitatiSali():
@@ -354,7 +347,7 @@ def adauga_sala(nume_sala, cladire, responsabil, numar_locuri, tip_sala):
 # -------------functii timp & data----------------------
 def get_date():
     now = datetime.now()
-    locale.setlocale(locale.LC_ALL, 'ro')
+    locale.setlocale(locale.LC_ALL, 'ro_RO.UTF-8')
     data_ro = now.strftime("%A")
     return data_ro
 
@@ -394,21 +387,5 @@ def test(idUser, zile, timpStart, timpEnd):
     cursor.close()
     return data
 
-timp_start = "00:00"
-timp_end = "12:00"
-timp_start1 = "12:00"
-timp_end1 = "00:00"
-checkOra1 = time_in_range(timp_start, timp_end)
-checkOra2 = time_in_range(timp_start1, timp_end1)
 
-if checkOra1 is True:
-    info = test(2, get_date(), timp_start, timp_end)
-    for el in info:
-        print(el['idSala'])
-elif checkOra2 is True:
-    info = list(test(2, get_date(), timp_start1, timp_end1))
-    list_id = []
-    for el in info:
-        list_id.append(el['idSala'])
-    print(list_id)
 

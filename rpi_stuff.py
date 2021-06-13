@@ -1,20 +1,21 @@
 import requests
 
 query = """mutation {
-  createPost(numeUser:"%s", cheie:"deschide usa"){
+  createPost(numeUser:%s, cheie:"t7w!zC*F-JaNdRgUjXn2r5u8x/A?D(G+KbPeShVmYp3s6v9y$B&E)H@McQfTjWn"){
     post{
       numeUser
       cheie
       timpArg
       dataArg
+      ipAdd
       }
     }
   }
 """
 
-url = 'https://192.168.0.153/graphql'
+url = 'https://86.107.31.214/'
 
 
 def req(numeUser):
-    query2 = query % (str(numeUser))
+    query2 = query % (numeUser)
     requests.post(url, json={'query': query2})

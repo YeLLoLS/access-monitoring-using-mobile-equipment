@@ -76,7 +76,6 @@
 							<th align="center">username</th>
 							<th align="center">email</th>
                             <th align="center">tipCont</th>
-							<th align="center">idUser</th>
 							<th align="center">Sterge/Edit/Disable</th>
 						</tr>
 					</thead>
@@ -87,7 +86,6 @@
 							<td data-label="username: " align="center">{{user[2]}}</td>
 							<td data-label="email: " align="center">{{user[4]}}</td>
                             <td data-label="tipCont: " align="center">{{user[6]}}</td>
-							<td data-label="idUser: " align="center">{{user[0]}}</td>
 							<td>
 								<div class="buttons has-addons is-centered">
                                     <form method="POST" action="{{ url_for('delete_user', idUser=user[0]) }}">

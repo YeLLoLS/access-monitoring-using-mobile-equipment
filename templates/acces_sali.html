@@ -56,9 +56,9 @@
 					<thead>
 						<tr>
 							<th align="center">nume</th>
-							<th align="center">idUser</th>
 							<th align="center">sala</th>
-							<th align="center">idSala</th>
+                            <th align="center">ziua</th>
+                            <th align="center">interval orar</th>
 							<th align="center">Sterge</th>
 						</tr>
 					</thead>
@@ -66,12 +66,12 @@
 						{% for acces in acceses %}
 						<tr>
 							<td data-label="nume: " align="center">{{acces[0]}}</td>
-							<td data-label="idUser: " align="center">{{acces[1]}}</td>
 							<td data-label="sala: " align="center">{{acces[2]}}</td>
-							<td data-label="idSala: " align="center">{{acces[3]}}</td>
+                            <td data-label="ziua: " align="center">{{acces[7]}}</td>
+                            <td data-label="interval orar: " align="center">{{acces[4]}} - {{acces[5]}}</td>
 							<td>
 								<div class="buttons has-addons is-centered">
-									<form method="POST" action="{{ url_for('delete_acces', idUser=acces[1]) }}">
+									<form method="POST" action="{{ url_for('delete_acces', idAcces=acces[3]) }}">
 										<p class="control">
 											<button class="button is-danger">
 												<span class="icon is-small">

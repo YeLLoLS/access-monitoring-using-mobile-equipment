@@ -36,8 +36,9 @@ def login():
 
                     return redirect(url_for('profil', tip_user=session['tip_user']))
                 elif acc_status == 'inactiv':
+                    print("inactiv")
                     flash('Cont dezactivat!')
-                    return redirect(url_for('logout'))
+                    return redirect(url_for('login'))
             flash('Datele introduse sunt incorecte!')
             return redirect(url_for('login'))
 
@@ -112,7 +113,7 @@ def edit_user(idUser):
             form_tipUser = request.form.get('userTypeValue')
             update_user(form_name, form_email, form_tipUser, idUser)
             flash('Utilizatorul a fost modificat!')
-            return redirect(url_for('utilizatori'))
+            return redirect(url_for('utilizatori_activi'))
         return render_template('edit_user.html', tip_user=session['tip_user'], name=session['name'], user=user)
     return redirect(url_for('logout'))
 
@@ -135,14 +136,14 @@ def delete_user(idUser):
     if 'username' in session and session['tip_user'] == 'profesor':
         if idUser == 2:
             flash('Interzisa stergerea acestui cont!!!')
-            return redirect(url_for('utilizatori'))
+            return redirect(url_for('utilizatori_activi'))
         elif request.method == 'POST':
 
             delete_access(idUser)
             delete_responsabil(idUser)
             delete_usr(idUser)
             flash('Utilizatorul a fost sters!')
-            return redirect(url_for('utilizatori'))
+            return redirect(url_for('utilizatori_activi'))
     return redirect(url_for('logout'))
 
 
@@ -205,11 +206,11 @@ def acces_sali():
     return redirect(url_for('logout'))
 
 
-@app.route('/delete_acces/<int:idUser>', methods=["POST"])
-def delete_acces(idUser):
+@app.route('/delete_acces/<int:idAcces>', methods=["POST"])
+def delete_acces(idAcces):
     if 'username' in session and session['tip_user'] == 'profesor':
         if request.method == 'POST':
-            delete_access(idUser)
+            delete_access(idAcces)
             flash('Accesul a fost sters!')
             return redirect(url_for('acces_sali'))
     return redirect(url_for('logout'))
@@ -217,7 +218,9 @@ def delete_acces(idUser):
 
 @app.route('/profil')
 def profil():
-    if 'username' in session:
+    if 'username' not in session:
+        return redirect(url_for('logout'))
+    elif 'username' in session:
         timp_start = "00:00"
         timp_end = "12:00"
         timp_start1 = "12:00"
@@ -226,14 +229,14 @@ def profil():
         checkOra2 = time_in_range(timp_start1, timp_end1)
 
         if checkOra1 is True:
-            info = list(test(2, get_date(), timp_start1, timp_end1))
+            info = list(test(session['idUser'], get_date(), timp_start, timp_end))
             list_id = []
             for el in info:
                 list_id.append(el['idSala'])
             return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
                                    idSala=list_id)
         elif checkOra2 is True:
-            info = list(test(2, get_date(), timp_start1, timp_end1))
+            info = list(test(session['idUser'], get_date(), timp_start1, timp_end1))
             list_id = []
             for el in info:
                 list_id.append(el['idSala'])
@@ -242,93 +245,23 @@ def profil():
     return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
 
 
-"""@app.route('/profil')
-def profil():
-    if 'username' in session:
-        info = get_acces_for_button(session['idUser'])
-        info2 = get_acces_for_button1(session['idUser'])
-        if len(info2) == 0:
-            return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-        elif len(info2) == 1 and info[0][0] == 6:
-            zi_acces = info[0][1]
-            zi_curenta = get_date()
-            if zi_acces == zi_curenta:
-                ora_start = info[0][2]
-                ora_end = info[0][3]
-                checkOra = time_in_range(ora_start, ora_end)
-                if checkOra is True:
-                    b206 = [info[0][0]]
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                           idSala=b206)
-                else:
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-            else:
-                return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-        elif len(info2) == 1 and info[0][0] == 7:
-            zi_acces = info[0][1]
-            zi_curenta = get_date()
-            if zi_acces == zi_curenta:
-                ora_start = info[0][2]
-                ora_end = info[0][3]
-                checkOra = time_in_range(ora_start, ora_end)
-                if checkOra is True:
-                    b207 = [info[0][0]]
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                           idSala=b207)
-                else:
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-            else:
-                return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])
-        elif len(info2) == 2:
-            zi_acces1 = info[0][1]
-            zi_acces2 = info[1][1]
-            zi_curenta = get_date()
-            if zi_acces1 == zi_acces2 == zi_curenta:
-                ora_start1 = info[0][2]
-                ora_end1 = info[0][3]
-                ora_start2 = info[1][2]
-                ora_end2 = info[1][3]
-
-                checkOra = time_in_range(ora_start1, ora_end1)
-                checkOra2 = time_in_range(ora_start2, ora_end2)
-                if checkOra == checkOra2:
-                    idSala = [info[0][0], info[1][0]]
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                           idSala=idSala)
-                elif checkOra is True:
-                    idSala = [info[0][0]]
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                           idSala=idSala)
-                elif checkOra2 is True:
-                    idSala = [info[1][0]]
-                    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                           idSala=idSala)
-            else:
-                if zi_acces1 == zi_curenta:
-                    ora_start = info[0][2]
-                    ora_end = info[0][3]
-                    checkOra = time_in_range(ora_start, ora_end)
-                    if checkOra is True:
-                        idSala = [info[0][0]]
-                        return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                               idSala=idSala)
-                elif zi_acces2 == zi_curenta:
-                    ora_start = info[1][2]
-                    ora_end = info[1][3]
-                    checkOra = time_in_range(ora_start, ora_end)
-                    if checkOra is True:
-                        idSala = [info[1][0]]
-                        return render_template('profil.html', tip_user=session['tip_user'], name=session['name'],
-                                               idSala=idSala)
-
-    return render_template('profil.html', tip_user=session['tip_user'], name=session['name'])"""
-
-
 @app.route('/deschide_usa', methods=["GET", "POST"])
 def deschide_usa():
     if 'username' in session and session['tip_user'] == 'profesor':
         if request.method == 'GET':
-            return redirect(url_for('profil')), req(session['name'])
+            timp_start = "00:00"
+            timp_end = "12:00"
+            timp_start1 = "12:00"
+            timp_end1 = "00:00"
+            checkOra1 = time_in_range(timp_start, timp_end)
+            checkOra2 = time_in_range(timp_start1, timp_end1)
+
+            if checkOra1 is True:
+                return redirect(url_for('profil')), req(session['name'])
+            elif checkOra2 is True:
+                return redirect(url_for('profil')), req(session['name'])
+            else:
+                return redirect(url_for('profil'))
         else:
             return "Error!!!"
     return redirect(url_for('logout'))
