@@ -249,19 +249,7 @@ def profil():
 def deschide_usa():
     if 'username' in session and session['tip_user'] == 'profesor':
         if request.method == 'GET':
-            timp_start = "00:00"
-            timp_end = "12:00"
-            timp_start1 = "12:00"
-            timp_end1 = "00:00"
-            checkOra1 = time_in_range(timp_start, timp_end)
-            checkOra2 = time_in_range(timp_start1, timp_end1)
-
-            if checkOra1 is True:
-                return redirect(url_for('profil')), req(session['name'])
-            elif checkOra2 is True:
-                return redirect(url_for('profil')), req(session['name'])
-            else:
-                return redirect(url_for('profil'))
+            return redirect(url_for('profil')), req(session['name'])
         else:
             return "Error!!!"
     return redirect(url_for('logout'))
