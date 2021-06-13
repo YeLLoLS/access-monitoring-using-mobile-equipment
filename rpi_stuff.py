@@ -13,7 +13,7 @@ query = """mutation {
   }
 """
 
-url = 'https://86.107.31.214/'
+url = 'https://ip-to-rpi/'
 
 
 def req(numeUser):

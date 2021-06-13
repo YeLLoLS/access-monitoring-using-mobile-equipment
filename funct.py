@@ -4,10 +4,10 @@ import locale
 
 
 def login_info(username):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='',
+                                 user='',
+                                 password='',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT * from users where username = %s", username)
@@ -17,10 +17,10 @@ def login_info(username):
 
 
 def add_user_info(username):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT * from users where username = %s", username)
@@ -30,10 +30,10 @@ def add_user_info(username):
 
 
 def add_user(name, username, password, email, tip_user):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute(
@@ -44,10 +44,10 @@ def add_user(name, username, password, email, tip_user):
 
 
 def get_active_users():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT * from users where stare_cont='activ'")
@@ -57,10 +57,10 @@ def get_active_users():
 
 
 def get_inactive_users():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT * from users where stare_cont='inactiv'")
@@ -70,10 +70,10 @@ def get_inactive_users():
 
 
 def get_single_user(id):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT nume, email, tip_user from users where idUser=%s", id)
@@ -83,10 +83,10 @@ def get_single_user(id):
 
 
 def disable_acc(idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("UPDATE users set stare_cont='inactiv' where idUser=%s", idUser)
@@ -95,10 +95,10 @@ def disable_acc(idUser):
 
 
 def activate_acc(idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("UPDATE users set stare_cont='activ' where idUser=%s", idUser)
@@ -107,10 +107,10 @@ def activate_acc(idUser):
 
 
 def change_password(username, password):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("UPDATE users set password=%s where username=%s", (password, username))
@@ -119,10 +119,10 @@ def change_password(username, password):
 
 
 def update_user(nume, email, tip_user, idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute(
@@ -133,10 +133,10 @@ def update_user(nume, email, tip_user, idUser):
 
 
 def delete_usr(id):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("DELETE FROM users WHERE idUser=%s", id)
@@ -145,10 +145,10 @@ def delete_usr(id):
 
 
 def get_acces():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute(
@@ -160,10 +160,10 @@ def get_acces():
 
 
 def delete_access(idAcces):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("DELETE FROM accesSali WHERE idAcces=%s", idAcces)
@@ -172,10 +172,10 @@ def delete_access(idAcces):
 
 
 def delete_responsabil(idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("UPDATE sali set responsabil = NULL where responsabil=%s", idUser)
@@ -184,10 +184,10 @@ def delete_responsabil(idUser):
 
 
 def get_acces_info(idUser, idSala, zile, timpStart, timpEnd):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT * FROM accesSali where iduser=%s and idSala=%s and zile=%s and timpStart=%s and timpEnd=%s", (idUser, idSala, zile, timpStart, timpEnd))
@@ -199,10 +199,10 @@ def get_acces_info(idUser, idSala, zile, timpStart, timpEnd):
 
 
 def add_acces(idUser, idSala, zile, timpStart, timpEnd):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("insert into accesSali(idUser, idSala, zile, timpStart, timpEnd) values (%s,%s,%s,%s,%s)",
@@ -212,10 +212,10 @@ def add_acces(idUser, idSala, zile, timpStart, timpEnd):
 
 
 def get_idUser(numeUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("select idUser from users where nume=%s", numeUser)
@@ -225,10 +225,10 @@ def get_idUser(numeUser):
 
 
 def get_acces_for_button(idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB',
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME',
                                  )
 
     cursor = connection.cursor()
@@ -241,10 +241,10 @@ def get_acces_for_button(idUser):
 
 
 def get_acces_for_button1(idUser):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("SELECT idSala FROM accesSali where idUser=%s", idUser)
@@ -255,10 +255,10 @@ def get_acces_for_button1(idUser):
 
 
 def adauga_unitate_unitateSala(numeUnitate, idSala):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
     verificare_status = ""
     cursor = connection.cursor()
     sql_ver = cursor.execute("select * from unitati where nume_unitate=%s", numeUnitate)
@@ -285,10 +285,10 @@ def adauga_unitate_unitateSala(numeUnitate, idSala):
 
 
 def get_sali_notInUnitatiSali():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
     cursor = connection.cursor()
     sql = cursor.execute(
         "select a.idSala, a.nume_sala from sali a LEFT OUTER JOIN unitatiSali b using(idSala) where b.idSala IS NULL")
@@ -298,10 +298,10 @@ def get_sali_notInUnitatiSali():
 
 
 def get_responsabili():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("select idUser, nume from users where tip_user='profesor'")
@@ -310,10 +310,10 @@ def get_responsabili():
     return data
 
 def get_sali():
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
 
     cursor = connection.cursor()
     sql = cursor.execute("select idSala, nume_sala from sali")
@@ -323,10 +323,10 @@ def get_sali():
 
 
 def adauga_sala(nume_sala, cladire, responsabil, numar_locuri, tip_sala):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB')
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME')
     verificare_status = ""
     cursor = connection.cursor()
     sql_ver = cursor.execute("select * from sali where nume_sala=%s", nume_sala)
@@ -375,10 +375,10 @@ def time_in_range(start, end):
         return start <= x or x <= end
 
 def test(idUser, zile, timpStart, timpEnd):
-    connection = pymysql.connect(host='139.162.181.85',
-                                 user='yello',
-                                 password='A!3a09b86cc',
-                                 database='licentaDB',
+    connection = pymysql.connect(host='db-ip',
+                                 user='username',
+                                 password='password',
+                                 database='dbNAME',
                                  cursorclass=pymysql.cursors.DictCursor)
 
     cursor = connection.cursor()
